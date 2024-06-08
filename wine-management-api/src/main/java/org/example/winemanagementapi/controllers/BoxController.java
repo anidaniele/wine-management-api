@@ -3,6 +3,7 @@ package org.example.winemanagementapi.controllers;
 import lombok.RequiredArgsConstructor;
 import org.example.winemanagementapi.converters.BoxConverter;
 import org.example.winemanagementapi.dto.BoxRequest;
+import org.example.winemanagementapi.dto.BoxResponse;
 import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.services.BoxService;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,12 @@ public class BoxController {
     private final BoxService boxService;
 
     @GetMapping
-    public ResponseEntity<List<BoxRequest>> getBoxes() {
+    public ResponseEntity<List<BoxResponse>> getBoxes() {
         List<Box> boxes = this.boxService.getAllBoxes();
         if (boxes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(BoxConverter.convertBoxRequestToBox())
+        return ResponseEntity.ok(BoxConverter.convertBoxListToBoxDtoList(boxes));
     }
 
 }
