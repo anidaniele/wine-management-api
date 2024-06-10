@@ -1,7 +1,6 @@
 package org.example.winemanagementapi.dto;
 
 import lombok.Data;
-import org.example.winemanagementapi.entities.Grape;
 
 import java.util.List;
 

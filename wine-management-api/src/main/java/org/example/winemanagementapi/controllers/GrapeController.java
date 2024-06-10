@@ -1,11 +1,8 @@
 package org.example.winemanagementapi.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.converters.BoxConverter;
 import org.example.winemanagementapi.converters.GrapeConverter;
-import org.example.winemanagementapi.dto.BoxResponse;
 import org.example.winemanagementapi.dto.GrapeResponse;
-import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.services.GrapeService;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,10 @@
 package org.example.winemanagementapi.converters;
 
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.example.winemanagementapi.dto.GrapeRequest;
 import org.example.winemanagementapi.dto.GrapeResponse;
 import org.example.winemanagementapi.entities.Grape;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.ArrayList;
 import java.util.List;

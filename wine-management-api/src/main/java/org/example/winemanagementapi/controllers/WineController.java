@@ -8,7 +8,6 @@ import org.example.winemanagementapi.dto.WineResponse;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.entities.Wine;
 import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
-import org.example.winemanagementapi.repositories.WineRepository;
 import org.example.winemanagementapi.services.GrapeService;
 import org.example.winemanagementapi.services.WineService;
 import org.springframework.http.HttpStatus;

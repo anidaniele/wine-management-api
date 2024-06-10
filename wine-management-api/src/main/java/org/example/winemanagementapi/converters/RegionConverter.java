@@ -4,9 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.example.winemanagementapi.dto.RegionRequest;
 import org.example.winemanagementapi.dto.RegionResponse;
-import org.example.winemanagementapi.dto.WineResponse;
 import org.example.winemanagementapi.entities.Region;
-import org.example.winemanagementapi.entities.Wine;
 
 import java.util.ArrayList;
 import java.util.List;

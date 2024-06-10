@@ -3,9 +3,7 @@ package org.example.winemanagementapi.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 

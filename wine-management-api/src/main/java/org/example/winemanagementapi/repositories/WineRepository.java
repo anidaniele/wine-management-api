@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface WineRepository extends JpaRepository<Wine, Long> {
 
-    public List<Wine> findWinesByType(String type);
+    List<Wine> findWinesByType(String type);
 
 }

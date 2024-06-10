@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface GrapeRepository extends JpaRepository<Grape, Long> {
 
-    public List<Grape> findAllByTitleIn(List<String> titles);
+    List<Grape> findAllByTitleIn(List<String> titles);
 }
