@@ -12,5 +12,5 @@ public class WineResponse {
     private String type;
     private Integer year;
     private List<GrapeResponse> grapes;
-    private RegionResponse region  ;
+    private RegionResponse region;
 }

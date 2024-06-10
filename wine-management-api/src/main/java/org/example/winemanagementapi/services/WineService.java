@@ -17,7 +17,9 @@ public class WineService {
 
     public Wine getWineById(long id) { return wineRepository.findById(id).orElse(null); }
 
-    public List<Wine> getWineByType(String type) {return wineRepository}
+    public Wine addWine(Wine wine) { return wineRepository.saveAndFlush(wine); }
+
+    //public List<Wine> getWineByType(String type) {return wineRepository;}
 
 
 }

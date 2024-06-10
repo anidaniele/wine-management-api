@@ -21,8 +21,6 @@ public class Wine {
     private Integer year;
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Grape> grapes = new ArrayList<>();
-    @CreatedDate
-    private Date createdAt;
     @ManyToOne
     private Region region;
 }

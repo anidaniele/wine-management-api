@@ -1,5 +1,7 @@
 package org.example.winemanagementapi.converters;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.example.winemanagementapi.dto.BoxRequest;
 import org.example.winemanagementapi.dto.BoxResponse;
 import org.example.winemanagementapi.entities.Box;
@@ -7,6 +9,7 @@ import org.example.winemanagementapi.entities.Box;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access= AccessLevel.PRIVATE)
 public class BoxConverter {
 
     public static Box convertBoxDtoToBox(BoxRequest boxRequest) {
@@ -24,11 +27,12 @@ public class BoxConverter {
             boxResponse = new BoxResponse();
             boxResponse.setId(box.getId());
             boxResponse.setName(box.getName());
+            boxResponse.setWines(WineConverter.convertWinesToWineResponseList(box.getWines()));
         }
         return boxResponse;
     }
 
-    public static List<BoxResponse> convertBoxListToBoxDtoList(List<Box> boxList) {
+    public static List<BoxResponse> convertBoxListToBoxResponseList(List<Box> boxList) {
         List<BoxResponse> boxResponseList = new ArrayList<>();
         for (Box box : boxList) {
             boxResponseList.add(convertBoxToBoxResponse(box));
