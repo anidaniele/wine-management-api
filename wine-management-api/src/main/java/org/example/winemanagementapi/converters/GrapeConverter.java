@@ -29,6 +29,7 @@ public final class GrapeConverter {
             grapeResponse.setId(grape.getId());
             grapeResponse.setTitle(grape.getTitle());
             grapeResponse.setDescription(grape.getDescription());
+            grapeResponse.setWines(WineConverter.convertWinesToWineResponseList(grape.getWines()));
         }
         return grapeResponse;
     }

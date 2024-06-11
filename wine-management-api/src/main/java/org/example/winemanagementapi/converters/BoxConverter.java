@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access= AccessLevel.PRIVATE)
-public class BoxConverter {
+public final class BoxConverter {
 
     public static Box convertBoxDtoToBox(BoxRequest boxRequest) {
         Box box = null;

@@ -1,5 +1,7 @@
 package org.example.winemanagementapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +18,7 @@ public class Grape {
     private Long id;
     private String title;
     private String description;
-    @ManyToMany(mappedBy = "grapes", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "grapes", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Wine> wines = new ArrayList<>();
 }
