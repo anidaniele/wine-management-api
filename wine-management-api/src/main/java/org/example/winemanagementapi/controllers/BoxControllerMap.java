@@ -2,13 +2,13 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.converters.BoxConverter;
 import org.example.winemanagementapi.dto.BoxRequest;
 import org.example.winemanagementapi.dto.BoxResponse;
 import org.example.winemanagementapi.dto.BoxWineResponse;
 import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.exceptions.ConflictException;
 import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
+import org.example.winemanagementapi.mappers.BoxMapper;
 import org.example.winemanagementapi.services.BoxService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/boxes")
-public class BoxController {
+public class BoxControllerMap {
 
     private final BoxService boxService;
+    private final BoxMapper boxMapper;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping
@@ -30,7 +31,7 @@ public class BoxController {
         if (boxes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(BoxConverter.convertBoxListToBoxWineResponseList(boxes));
+        return ResponseEntity.ok(boxes.stream().map(boxMapper::boxToBoxWineResponse).toList());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
@@ -40,14 +41,14 @@ public class BoxController {
         if (box == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(BoxConverter.convertBoxToBoxResponse(box));
+        return ResponseEntity.ok(boxMapper.boxToBoxResponse(box));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BoxResponse> createBox(@RequestBody @Valid BoxRequest boxRequest) {
-        Box box = this.boxService.addBox(BoxConverter.convertBoxRequestToBox(boxRequest));
-        BoxResponse response = BoxConverter.convertBoxToBoxResponse(box);
+        Box box = this.boxService.addBox(boxMapper.boxRequestToBox(boxRequest));
+        BoxResponse response = boxMapper.boxToBoxResponse(box);
         return ResponseEntity.ok(response);
     }
 

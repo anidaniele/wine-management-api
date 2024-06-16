@@ -2,13 +2,13 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.converters.RegionConverter;
 import org.example.winemanagementapi.dto.RegionRequest;
 import org.example.winemanagementapi.dto.RegionResponse;
 import org.example.winemanagementapi.dto.RegionWineResponse;
 import org.example.winemanagementapi.entities.Region;
 import org.example.winemanagementapi.exceptions.ConflictException;
 import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
+import org.example.winemanagementapi.mappers.RegionMapper;
 import org.example.winemanagementapi.services.RegionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/regions")
-public class RegionController {
+public class RegionControllerMap {
 
     private final RegionService regionService;
+    private final RegionMapper regionMapper;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping
@@ -30,7 +31,7 @@ public class RegionController {
         if (regions.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(RegionConverter.convertRegionsToRegionResponseList(regions));
+        return ResponseEntity.ok(regions.stream().map(regionMapper::regionToRegionResponse).toList());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
@@ -40,14 +41,14 @@ public class RegionController {
         if (region == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(RegionConverter.convertRegiontoRegionWineResponse(region));
+        return ResponseEntity.ok(regionMapper.regionToRegionWineResponse(region));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<RegionResponse> createRegion(@RequestBody @Valid RegionRequest regionRequest) {
-        Region region = this.regionService.addRegion(RegionConverter.convertRegionRequestToRegion(regionRequest));
-        RegionResponse response = RegionConverter.convertRegiontoRegionResponse(region);
+        Region region = this.regionService.addRegion(regionMapper.regionRequestToRegion(regionRequest));
+        RegionResponse response = regionMapper.regionToRegionResponse(region);
         return ResponseEntity.ok(response);
     }
 

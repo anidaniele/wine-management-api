@@ -2,12 +2,12 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.converters.GrapeConverter;
 import org.example.winemanagementapi.dto.GrapeRequest;
 import org.example.winemanagementapi.dto.GrapeResponse;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.exceptions.ConflictException;
 import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
+import org.example.winemanagementapi.mappers.GrapeMapper;
 import org.example.winemanagementapi.services.GrapeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,8 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/grapes")
-public class GrapeController {
+public class GrapeControllerMap {
     private final GrapeService grapeService;
+    private final GrapeMapper grapeMapper;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping
@@ -28,14 +29,14 @@ public class GrapeController {
         if (grapes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(GrapeConverter.convertGrapeListToGrapeResponseList(grapes));
+        return ResponseEntity.ok(grapes.stream().map(grapeMapper::grapeToGrapeResponse).toList());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<GrapeResponse> createGrape(@RequestBody @Valid GrapeRequest grapeRequest) {
-        Grape grape = this.grapeService.addGrape(GrapeConverter.convertGrapeRequestToGrape(grapeRequest));
-        GrapeResponse response = GrapeConverter.convertGrapeToGrapeResponse(grape);
+        Grape grape = this.grapeService.addGrape(grapeMapper.grapeRequestToGrape(grapeRequest));
+        GrapeResponse response = grapeMapper.grapeToGrapeResponse(grape);
         return ResponseEntity.ok(response);
     }
 

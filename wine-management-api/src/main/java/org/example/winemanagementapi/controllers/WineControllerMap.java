@@ -2,7 +2,6 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.converters.WineConverter;
 import org.example.winemanagementapi.dto.WineRequest;
 import org.example.winemanagementapi.dto.WineResponse;
 import org.example.winemanagementapi.entities.Box;
@@ -10,6 +9,7 @@ import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.entities.Region;
 import org.example.winemanagementapi.entities.Wine;
 import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
+import org.example.winemanagementapi.mappers.WineMapper;
 import org.example.winemanagementapi.services.BoxService;
 import org.example.winemanagementapi.services.GrapeService;
 import org.example.winemanagementapi.services.RegionService;
@@ -24,11 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/wines")
-public class WineController {
+public class WineControllerMap {
     private final WineService wineService;
     private final GrapeService grapeService;
     private final RegionService regionService;
     private final BoxService boxService;
+    private final WineMapper wineMapper;
 
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
@@ -38,14 +39,14 @@ public class WineController {
         if (wines.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(WineConverter.convertWinesToWineResponseList(wines));
+        return ResponseEntity.ok(wines.stream().map(wineMapper::wineToWineResponse).toList());
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<WineResponse> addWine(@RequestBody @Valid WineRequest wineRequest) {
-        Wine wine = WineConverter.convertWineRequestToWine(wineRequest);
+        Wine wine = wineMapper.wineRequestToWine(wineRequest);
         List<Grape> grapes = this.grapeService.getGrapesByTitle(wineRequest.grapeTitles());
         if (grapes.size() != wineRequest.grapeTitles().size()){
             return ResponseEntity.notFound().build();
@@ -56,7 +57,7 @@ public class WineController {
         wine.setBox(box);
         wine.setGrapes(grapes);
         Wine addedWine = this.wineService.addWine(wine);
-        WineResponse response = WineConverter.convertWineToWineResponse(addedWine);
+        WineResponse response = wineMapper.wineToWineResponse(addedWine);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -68,7 +69,7 @@ public class WineController {
             if (wines.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-            List<WineResponse> wineResponses = WineConverter.convertWinesToWineResponseList(wines);
+            List<WineResponse> wineResponses = wines.stream().map(wineMapper::wineToWineResponse).toList();
             return ResponseEntity.ok(wineResponses);
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -82,7 +83,7 @@ public class WineController {
         if (wines.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(WineConverter.convertWinesToWineResponseList(wines));
+        return ResponseEntity.ok(wines.stream().map(wineMapper::wineToWineResponse).toList());
     }
 
     @PutMapping("/{id}")
@@ -108,7 +109,7 @@ public class WineController {
         wine.setGrapes(grapes);
 
         Wine updatedWine = this.wineService.addWine(wine);
-        WineResponse response = WineConverter.convertWineToWineResponse(updatedWine);
+        WineResponse response = wineMapper.wineToWineResponse(updatedWine);
         return ResponseEntity.ok(response);
     }
 
