@@ -7,7 +7,6 @@ import org.example.winemanagementapi.dto.RegionRequest;
 import org.example.winemanagementapi.dto.RegionResponse;
 import org.example.winemanagementapi.dto.RegionWineResponse;
 import org.example.winemanagementapi.entities.Region;
-import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
 import org.example.winemanagementapi.services.RegionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,14 +64,13 @@ public class RegionController {
 //        return ResponseEntity.ok(RegionConverter.convertRegionsToRegionWineResponseList(region));
 //    }
 
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> createRegion(@Valid @RequestBody RegionRequest regionRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
-        }
+    public ResponseEntity<RegionResponse> createRegion(@RequestBody @Valid RegionRequest regionRequest) {
         Region region = this.regionService.addRegion(RegionConverter.convertRegionRequestToRegion(regionRequest));
-        return ResponseEntity.status(HttpStatus.CREATED).body(RegionConverter.convertRegiontoRegionResponse(region));
+        RegionResponse response = RegionConverter.convertRegiontoRegionResponse(region);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -1,5 +1,6 @@
 package org.example.winemanagementapi.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.winemanagementapi.converters.BoxConverter;
 import org.example.winemanagementapi.dto.BoxRequest;
@@ -46,12 +47,10 @@ public class BoxController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> createBox(@RequestBody BoxRequest boxRequest,  BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
-        }
+    public ResponseEntity<BoxResponse> createBox(@RequestBody @Valid BoxRequest boxRequest) {
         Box box = this.boxService.addBox(BoxConverter.convertBoxRequestToBox(boxRequest));
-        return ResponseEntity.ok(BoxConverter.convertBoxToBoxResponse(box));
+        BoxResponse response = BoxConverter.convertBoxToBoxResponse(box);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

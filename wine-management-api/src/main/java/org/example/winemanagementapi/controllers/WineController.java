@@ -43,26 +43,23 @@ public class WineController {
     }
 
 
-@PreAuthorize("hasRole('ADMIN')")
-@PostMapping
-public ResponseEntity<?> addWine(@Valid @RequestBody WineRequest wineRequest, BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-        return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<WineResponse> addWine(@RequestBody @Valid WineRequest wineRequest) {
+        Wine wine = WineConverter.convertWineRequestToWine(wineRequest);
+        List<Grape> grapes = this.grapeService.getGrapesByTitle(wineRequest.grapeTitles());
+        if (grapes.size() != wineRequest.grapeTitles().size()){
+            return ResponseEntity.notFound().build();
+        }
+        Region region = this.regionService.getRegionByName(wineRequest.regionName());
+        Box box = this.boxService.getBoxByName(wineRequest.boxTitle());
+        wine.setRegion(region);
+        wine.setBox(box);
+        wine.setGrapes(grapes);
+        Wine addedWine = this.wineService.addWine(wine);
+        WineResponse response = WineConverter.convertWineToWineResponse(addedWine);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-    Wine wine = WineConverter.convertWineRequestToWine(wineRequest);
-    List<Grape> grapes = this.grapeService.getGrapesByTitle(wineRequest.grapeTitles());
-    if (grapes.size() != wineRequest.grapeTitles().size()){
-        return ResponseEntity.notFound().build();
-    }
-    Region region = this.regionService.getRegionByName(wineRequest.regionName());
-    Box box = this.boxService.getBoxByName(wineRequest.boxTitle());
-    wine.setRegion(region);
-    wine.setBox(box);
-    wine.setGrapes(grapes);
-    Wine addedWine = this.wineService.addWine(wine);
-    return ResponseEntity.status(HttpStatus.CREATED).body(WineConverter.convertWineToWineResponse(addedWine));
-}
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping("/country/{country}")
@@ -85,11 +82,7 @@ public ResponseEntity<?> addWine(@Valid @RequestBody WineRequest wineRequest, Bi
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateWine(@PathVariable Long id, @Valid @RequestBody WineRequest wineUpdateRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
-        }
-
+    public ResponseEntity<WineResponse> updateWine(@PathVariable Long id, @RequestBody @Valid WineRequest wineUpdateRequest) {
         Wine wine = this.wineService.getWineById(id);
         if (wine == null) {
             return ResponseEntity.notFound().build();
@@ -111,7 +104,8 @@ public ResponseEntity<?> addWine(@Valid @RequestBody WineRequest wineRequest, Bi
         wine.setGrapes(grapes);
 
         Wine updatedWine = this.wineService.addWine(wine);
-        return ResponseEntity.ok(WineConverter.convertWineToWineResponse(updatedWine));
+        WineResponse response = WineConverter.convertWineToWineResponse(updatedWine);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

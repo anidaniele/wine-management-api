@@ -43,12 +43,10 @@ public class GrapeController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> createGrape(@Valid @RequestBody GrapeRequest grapeRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
-        }
+    public ResponseEntity<GrapeResponse> createGrape(@RequestBody @Valid GrapeRequest grapeRequest) {
         Grape grape = this.grapeService.addGrape(GrapeConverter.convertGrapeRequestToGrape(grapeRequest));
-        return ResponseEntity.status(HttpStatus.CREATED).body(GrapeConverter.convertGrapeToGrapeResponse(grape));
+        GrapeResponse response = GrapeConverter.convertGrapeToGrapeResponse(grape);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

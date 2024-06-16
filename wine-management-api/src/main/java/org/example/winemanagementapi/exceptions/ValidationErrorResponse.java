@@ -12,15 +12,21 @@ import java.util.List;
 @Slf4j
 @Getter
 @Setter
-public class ValidationErrorResponse extends BaseErrorResponse {
+public class ValidationErrorResponse {
     private List<String> errors;
 
-    public ValidationErrorResponse(List<FieldError> errors) {
-        super("Validation error", HttpStatus.BAD_REQUEST.value());
+//    public ValidationErrorResponse(List<FieldError> errors) {
+//        super("Validation error", HttpStatus.BAD_REQUEST.value());
+//
+//        this.errors = new ArrayList<>();
+//        for (FieldError error : errors) {
+//            this.errors.add(String.format("%s: %s", error.getField(), error.getDefaultMessage()));
+//        }
+//    }
 
-        this.errors = new ArrayList<>();
-        for (FieldError error : errors) {
-            this.errors.add(String.format("%s: %s", error.getField(), error.getDefaultMessage()));
-        }
+    public ValidationErrorResponse(List<FieldError> fieldErrors) {
+        this.errors = fieldErrors.stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
     }
 }
