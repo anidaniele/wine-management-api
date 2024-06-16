@@ -7,6 +7,7 @@ import org.example.winemanagementapi.repositories.BoxRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -19,13 +20,25 @@ public class BoxService {
 
     public Box addBox(Box box) { return boxRepository.saveAndFlush(box); }
 
-    public long deleteBoxById(Long id) { return boxRepository.removeById(id); }
-
     public Box getBoxByName(String name) { return boxRepository.findByName(name); }
 
     public Box getBoxByWineId(Long wineId) {
         Wine wine = wineService.getWineById(wineId);
         return wine.getBox();
+    }
+
+    public int deleteBoxById(Long id) {
+        Optional<Box> boxOptional = boxRepository.findById(id);
+        if (boxOptional.isPresent()) {
+            Box box = boxOptional.get();
+            if (box.getWines().isEmpty()) {
+                boxRepository.deleteById(id);
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+        return 0;
     }
 
 }

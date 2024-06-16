@@ -6,12 +6,11 @@ import org.example.winemanagementapi.converters.GrapeConverter;
 import org.example.winemanagementapi.dto.GrapeRequest;
 import org.example.winemanagementapi.dto.GrapeResponse;
 import org.example.winemanagementapi.entities.Grape;
-import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
+import org.example.winemanagementapi.exceptions.ConflictException;
+import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
 import org.example.winemanagementapi.services.GrapeService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,10 +51,13 @@ public class GrapeController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGrapeById(@PathVariable Long id) {
-        if (this.grapeService.deleteGrapeById(id) > 0){
+        int result = this.grapeService.deleteGrapeById(id);
+        if (result > 0) {
             return ResponseEntity.noContent().build();
+        } else if (result == 0) {
+            throw new ResourceNotFoundException("Grape not found with id " + id);
+        } else {
+            throw new ConflictException("Grape cannot be deleted - it has associated wines to it");
         }
-        return ResponseEntity.notFound().build();
     }
-
 }

@@ -6,6 +6,7 @@ import org.example.winemanagementapi.repositories.RegionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -17,5 +18,18 @@ public class RegionService {
     public List<Region> getRegionsByCountry(String country) { return regionRepository.findByCountry(country); }
     public Region getRegionByName(String name) { return regionRepository.findByName(name); }
     public Region addRegion(Region region) { return regionRepository.saveAndFlush(region); }
-    public long deleteRegionById(Long id) { return regionRepository.removeById(id); }
+
+    public int deleteRegionById(Long id) {
+        Optional<Region> regionOptional = regionRepository.findById(id);
+        if (regionOptional.isPresent()) {
+            Region region = regionOptional.get();
+            if (region.getWines().isEmpty()) {
+                regionRepository.deleteById(id);
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+        return 0;
+    }
 }

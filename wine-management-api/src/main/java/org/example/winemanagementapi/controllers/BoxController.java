@@ -7,12 +7,11 @@ import org.example.winemanagementapi.dto.BoxRequest;
 import org.example.winemanagementapi.dto.BoxResponse;
 import org.example.winemanagementapi.dto.BoxWineResponse;
 import org.example.winemanagementapi.entities.Box;
-import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
+import org.example.winemanagementapi.exceptions.ConflictException;
+import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
 import org.example.winemanagementapi.services.BoxService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/boxes")
-//@Validated
 public class BoxController {
 
     private final BoxService boxService;
@@ -56,12 +54,13 @@ public class BoxController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBoxById(@PathVariable Long id) {
-        if (this.boxService.deleteBoxById(id) > 0){
+        int result = this.boxService.deleteBoxById(id);
+        if (result > 0) {
             return ResponseEntity.noContent().build();
+        } else if (result == 0) {
+            throw new ResourceNotFoundException("Box not found with id " + id);
+        } else {
+            throw new ConflictException("Box cannot be deleted - it is not empty");
         }
-        return ResponseEntity.notFound().build();
     }
-
-
-
 }

@@ -9,7 +9,6 @@ import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.entities.Region;
 import org.example.winemanagementapi.entities.Wine;
-import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
 import org.example.winemanagementapi.services.BoxService;
 import org.example.winemanagementapi.services.GrapeService;
 import org.example.winemanagementapi.services.RegionService;
@@ -17,7 +16,6 @@ import org.example.winemanagementapi.services.WineService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

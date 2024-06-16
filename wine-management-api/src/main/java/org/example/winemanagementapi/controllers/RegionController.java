@@ -7,12 +7,11 @@ import org.example.winemanagementapi.dto.RegionRequest;
 import org.example.winemanagementapi.dto.RegionResponse;
 import org.example.winemanagementapi.dto.RegionWineResponse;
 import org.example.winemanagementapi.entities.Region;
+import org.example.winemanagementapi.exceptions.ConflictException;
+import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
 import org.example.winemanagementapi.services.RegionService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/regions")
-//@Validated
 public class RegionController {
 
     private final RegionService regionService;
@@ -76,9 +74,13 @@ public class RegionController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRegionById(@PathVariable Long id) {
-        if (this.regionService.deleteRegionById(id) > 0){
+        int result = this.regionService.deleteRegionById(id);
+        if (result > 0) {
             return ResponseEntity.noContent().build();
+        } else if (result == 0) {
+            throw new ResourceNotFoundException("Region not found with id " + id);
+        } else {
+            throw new ConflictException("Region cannot be deleted - it has associated wines to it");
         }
-        return ResponseEntity.notFound().build();
     }
 }
