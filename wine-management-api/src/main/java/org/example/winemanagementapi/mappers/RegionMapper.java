@@ -1,21 +1,18 @@
 package org.example.winemanagementapi.mappers;
 
-import org.example.winemanagementapi.dto.RegionRequest;
-import org.example.winemanagementapi.dto.RegionResponse;
-import org.example.winemanagementapi.dto.RegionWineResponse;
-import org.example.winemanagementapi.dto.WineResponse;
+import org.example.winemanagementapi.dto.region.RegionRequest;
+import org.example.winemanagementapi.dto.region.RegionResponse;
+import org.example.winemanagementapi.dto.region.RegionWineResponse;
+import org.example.winemanagementapi.dto.wine.WineResponse;
 import org.example.winemanagementapi.entities.Region;
 import org.example.winemanagementapi.entities.Wine;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = WineMapper.class)
 public interface RegionMapper {
-
-    RegionMapper INSTANCE = Mappers.getMapper(RegionMapper.class);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "wines", ignore = true)

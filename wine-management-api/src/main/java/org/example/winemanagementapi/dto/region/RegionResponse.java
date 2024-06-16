@@ -1,4 +1,4 @@
-package org.example.winemanagementapi.dto;
+package org.example.winemanagementapi.dto.region;
 
 import lombok.Builder;
 

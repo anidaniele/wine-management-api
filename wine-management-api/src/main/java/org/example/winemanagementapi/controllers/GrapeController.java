@@ -2,8 +2,8 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.dto.GrapeRequest;
-import org.example.winemanagementapi.dto.GrapeResponse;
+import org.example.winemanagementapi.dto.grape.GrapeRequest;
+import org.example.winemanagementapi.dto.grape.GrapeResponse;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.exceptions.ConflictException;
 import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/grapes")
-public class GrapeControllerMap {
+public class GrapeController {
     private final GrapeService grapeService;
     private final GrapeMapper grapeMapper;
 

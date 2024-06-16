@@ -2,9 +2,9 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.dto.BoxRequest;
-import org.example.winemanagementapi.dto.BoxResponse;
-import org.example.winemanagementapi.dto.BoxWineResponse;
+import org.example.winemanagementapi.dto.box.BoxRequest;
+import org.example.winemanagementapi.dto.box.BoxResponse;
+import org.example.winemanagementapi.dto.box.BoxWineResponse;
 import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.exceptions.ConflictException;
 import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/boxes")
-public class BoxControllerMap {
+public class BoxController {
 
     private final BoxService boxService;
     private final BoxMapper boxMapper;

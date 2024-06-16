@@ -1,6 +1,7 @@
-package org.example.winemanagementapi.dto;
+package org.example.winemanagementapi.dto.box;
 
 import lombok.Builder;
+import org.example.winemanagementapi.dto.wine.WineResponse;
 
 import java.util.List;
 

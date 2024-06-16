@@ -1,4 +1,4 @@
-package org.example.winemanagementapi.dto;
+package org.example.winemanagementapi.dto.box;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -2,9 +2,9 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.dto.RegionRequest;
-import org.example.winemanagementapi.dto.RegionResponse;
-import org.example.winemanagementapi.dto.RegionWineResponse;
+import org.example.winemanagementapi.dto.region.RegionRequest;
+import org.example.winemanagementapi.dto.region.RegionResponse;
+import org.example.winemanagementapi.dto.region.RegionWineResponse;
 import org.example.winemanagementapi.entities.Region;
 import org.example.winemanagementapi.exceptions.ConflictException;
 import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/regions")
-public class RegionControllerMap {
+public class RegionController {
 
     private final RegionService regionService;
     private final RegionMapper regionMapper;

@@ -1,19 +1,17 @@
 package org.example.winemanagementapi.mappers;
 
-import org.example.winemanagementapi.dto.WineRequest;
-import org.example.winemanagementapi.dto.WineResponse;
+import org.example.winemanagementapi.dto.wine.WineRequest;
+import org.example.winemanagementapi.dto.wine.WineResponse;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.entities.Wine;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {RegionMapper.class, GrapeMapper.class})
 public interface WineMapper {
-    WineMapper INSTANCE = Mappers.getMapper(WineMapper.class);
 
     @Mapping(target = "regionName", source = "region.name")
     @Mapping(target = "grapeTitles", source = "grapes", qualifiedByName = "mapGrapesToTitles")

@@ -19,7 +19,6 @@ public class AuthConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .requestMatchers("/schools/*/students/*").permitAll() // Everyone can access all /exams EPs
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();

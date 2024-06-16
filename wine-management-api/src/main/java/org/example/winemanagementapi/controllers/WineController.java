@@ -2,8 +2,8 @@ package org.example.winemanagementapi.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.winemanagementapi.dto.WineRequest;
-import org.example.winemanagementapi.dto.WineResponse;
+import org.example.winemanagementapi.dto.wine.WineRequest;
+import org.example.winemanagementapi.dto.wine.WineResponse;
 import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.entities.Region;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/wines")
-public class WineControllerMap {
+public class WineController {
     private final WineService wineService;
     private final GrapeService grapeService;
     private final RegionService regionService;

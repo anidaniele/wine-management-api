@@ -1,9 +1,6 @@
-package org.example.winemanagementapi.dto;
+package org.example.winemanagementapi.dto.wine;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 
 import java.util.List;
@@ -17,6 +14,7 @@ public record WineRequest (
     @Size(min = 2, max = 50)
     String type,
     @NotNull(message = "Year must not be null")
+    @Max(value = 2024, message = "Year cannot be in the future")
     Integer year,
     @NotBlank(message = "Region name must not be blank")
     @Size(min = 2, max = 50)
