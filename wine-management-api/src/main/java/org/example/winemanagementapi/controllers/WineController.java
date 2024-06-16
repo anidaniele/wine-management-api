@@ -5,13 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.example.winemanagementapi.converters.WineConverter;
 import org.example.winemanagementapi.dto.WineRequest;
 import org.example.winemanagementapi.dto.WineResponse;
+import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.entities.Grape;
+import org.example.winemanagementapi.entities.Region;
 import org.example.winemanagementapi.entities.Wine;
 import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
+import org.example.winemanagementapi.services.BoxService;
 import org.example.winemanagementapi.services.GrapeService;
+import org.example.winemanagementapi.services.RegionService;
 import org.example.winemanagementapi.services.WineService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +28,11 @@ import java.util.List;
 public class WineController {
     private final WineService wineService;
     private final GrapeService grapeService;
+    private final RegionService regionService;
+    private final BoxService boxService;
 
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping
     public ResponseEntity<List<WineResponse>> getAllWines() {
         List<Wine> wines = this.wineService.getAllWines();
@@ -33,31 +42,84 @@ public class WineController {
         return ResponseEntity.ok(WineConverter.convertWinesToWineResponseList(wines));
     }
 
-    @PostMapping
-    public ResponseEntity<?> addWine(@Valid @RequestBody WineRequest wineRequest, BindingResult bindingResult) {
+
+@PreAuthorize("hasRole('ADMIN')")
+@PostMapping
+public ResponseEntity<?> addWine(@Valid @RequestBody WineRequest wineRequest, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+        return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
+    }
+
+    Wine wine = WineConverter.convertWineRequestToWine(wineRequest);
+    List<Grape> grapes = this.grapeService.getGrapesByTitle(wineRequest.grapeTitles());
+    if (grapes.size() != wineRequest.grapeTitles().size()){
+        return ResponseEntity.notFound().build();
+    }
+    Region region = this.regionService.getRegionByName(wineRequest.regionName());
+    Box box = this.boxService.getBoxByName(wineRequest.boxTitle());
+    wine.setRegion(region);
+    wine.setBox(box);
+    wine.setGrapes(grapes);
+    Wine addedWine = this.wineService.addWine(wine);
+    return ResponseEntity.status(HttpStatus.CREATED).body(WineConverter.convertWineToWineResponse(addedWine));
+}
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
+    @GetMapping("/country/{country}")
+    public ResponseEntity<List<WineResponse>> getAllWinesByCountry(@PathVariable String country) {
+        List<Wine> wines = this.wineService.getWinesByCountry(country);
+        if (wines.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(WineConverter.convertWinesToWineResponseList(wines));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
+    @GetMapping("/region/{region}")
+    public ResponseEntity<List<WineResponse>> getAllWinesByRegion(@PathVariable String region) {
+        List<Wine> wines = this.wineService.getWinesByRegionName(region);
+        if (wines.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(WineConverter.convertWinesToWineResponseList(wines));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateWine(@PathVariable Long id, @Valid @RequestBody WineRequest wineUpdateRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
         }
 
-        Wine wine = WineConverter.convertWineRequestToWine(wineRequest);
-        List<Grape> grapes = this.grapeService.getGrapesById(wineRequest.getGrapeIds());
-        if (grapes.size() != wineRequest.getGrapeIds().size()){
-            return ResponseEntity.notFound().build();
-        }
-
-        wine.setGrapes(grapes);
-        Wine addedWine = this.wineService.addWine(wine);
-        return ResponseEntity.status(HttpStatus.CREATED).body(WineConverter.convertWineToWineResponse(addedWine));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<WineResponse> getwine(@PathVariable Long id) {
         Wine wine = this.wineService.getWineById(id);
         if (wine == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(WineConverter.convertWineToWineResponse(wine));
+
+        List<Grape> grapes = this.grapeService.getGrapesByTitle(wineUpdateRequest.grapeTitles());
+        if (grapes.size() != wineUpdateRequest.grapeTitles().size()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Region region = this.regionService.getRegionByName(wineUpdateRequest.regionName());
+        Box box = this.boxService.getBoxByName(wineUpdateRequest.boxTitle());
+
+        wine.setTitle(wineUpdateRequest.title());
+        wine.setType(wineUpdateRequest.type());
+        wine.setYear(wineUpdateRequest.year());
+        wine.setRegion(region);
+        wine.setBox(box);
+        wine.setGrapes(grapes);
+
+        Wine updatedWine = this.wineService.addWine(wine);
+        return ResponseEntity.ok(WineConverter.convertWineToWineResponse(updatedWine));
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWineById(@PathVariable Long id) {
+        if (this.wineService.deleteWineById(id) > 0){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

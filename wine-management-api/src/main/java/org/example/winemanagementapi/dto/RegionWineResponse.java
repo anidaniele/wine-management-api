@@ -1,12 +1,14 @@
 package org.example.winemanagementapi.dto;
 
 import lombok.Builder;
-import lombok.Data;
+
+import java.util.List;
 
 @Builder
-public record RegionResponse (
+public record RegionWineResponse (
     Long id,
     String name,
     String country,
-    String description
+    String description,
+    List<WineResponse> wines
 ){}

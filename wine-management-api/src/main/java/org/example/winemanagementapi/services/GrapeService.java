@@ -12,11 +12,9 @@ import java.util.List;
 public class GrapeService {
     private final GrapeRepository grapeRepository;
 
-
-    public Grape getGrapeById(Long id) { return this.grapeRepository.findById(id).orElse(null); }
-    public List<Grape> getGrapesById(List<Long> ids) { return grapeRepository.findAllById(ids); }
     public List<Grape> getAllGrapes() { return grapeRepository.findAll(); }
     public Grape addGrape(Grape grape) { return grapeRepository.saveAndFlush(grape); }
+    public List<Grape> getGrapesByTitle(List<String> titles) { return grapeRepository.findByTitleIn(titles); }
+    public long deleteGrapeById(Long id) { return grapeRepository.removeById(id); }
 
-    public List<Grape> getGrapesByTitle(List<String> titles) { return grapeRepository.findAllByTitleIn(titles); }
 }

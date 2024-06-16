@@ -1,14 +1,14 @@
 package org.example.winemanagementapi.repositories;
 
+import jakarta.transaction.Transactional;
 import org.example.winemanagementapi.entities.Wine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface WineRepository extends JpaRepository<Wine, Long> {
 
-    List<Wine> findWinesByType(String type);
+    @Transactional
+    long removeById(Long id);
 
 }

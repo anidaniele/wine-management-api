@@ -15,7 +15,6 @@ public class Region {
     private String name;
     private String country;
     private String description;
-    @OneToMany(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "region")
     private List<Wine> wines;
 }

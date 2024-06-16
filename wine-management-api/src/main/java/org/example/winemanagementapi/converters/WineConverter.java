@@ -1,24 +1,22 @@
 package org.example.winemanagementapi.converters;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.example.winemanagementapi.dto.WineRequest;
 import org.example.winemanagementapi.dto.WineResponse;
+import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.entities.Wine;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor(access= AccessLevel.PRIVATE)
 public final class WineConverter {
 
     public static Wine convertWineRequestToWine(WineRequest wineRequest) {
         Wine wine = null;
         if (wineRequest != null) {
             wine = new Wine();
-            wine.setType(wineRequest.getType());
-            wine.setTitle(wineRequest.getTitle());
-            wine.setYear(wineRequest.getYear());
+            wine.setType(wineRequest.type());
+            wine.setTitle(wineRequest.title());
+            wine.setYear(wineRequest.year());
         }
         return wine;
     }
@@ -26,23 +24,24 @@ public final class WineConverter {
     public static WineResponse convertWineToWineResponse(Wine wine) {
         WineResponse wineResponse = null;
         if (wine != null) {
-            wineResponse = new WineResponse();
-            wineResponse.setId(wine.getId());
-            wineResponse.setTitle(wine.getTitle());
-            wineResponse.setType(wine.getType());
-            wineResponse.setYear(wine.getYear());
-            wineResponse.setGrapes(GrapeConverter.convertGrapeListToGrapeResponseList(wine.getGrapes()));
-            wineResponse.setRegion(RegionConverter.convertRegiontoRegionResponse(wine.getRegion()));
+            wineResponse = WineResponse.builder()
+                    .id(wine.getId())
+                    .title(wine.getTitle())
+                    .type(wine.getType())
+                    .year(wine.getYear())
+                    .regionName(wine.getRegion() != null ? wine.getRegion().getName() : null)
+                    .grapeTitles(wine.getGrapes() != null ? wine.getGrapes().stream().map(Grape::getTitle).toList() : null)
+                    .build();
         }
         return wineResponse;
     }
 
     public static List<WineResponse> convertWinesToWineResponseList(List<Wine> wines) {
-        List<WineResponse> wineResponses = new ArrayList<>();
+        List<WineResponse> wineResponse = new ArrayList<>();
         for (Wine wine : wines) {
-            wineResponses.add(convertWineToWineResponse(wine));
+            wineResponse.add(convertWineToWineResponse(wine));
         }
-        return wineResponses;
+        return wineResponse;
     }
 
 }

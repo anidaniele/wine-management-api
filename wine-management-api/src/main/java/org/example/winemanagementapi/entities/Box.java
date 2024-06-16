@@ -15,9 +15,7 @@ public class Box {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "wine_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "box")
     private List<Wine> wines;
-
 
 }

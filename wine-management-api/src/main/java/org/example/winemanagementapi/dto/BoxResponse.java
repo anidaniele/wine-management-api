@@ -1,12 +1,9 @@
 package org.example.winemanagementapi.dto;
 
-import lombok.Data;
+import lombok.Builder;
 
-import java.util.List;
-
-@Data
-public class BoxResponse {
-    private Long id;
-    private String name;
-    private List<WineResponse> wines;
-}
+@Builder
+public record BoxResponse(
+    Long id,
+    String name
+){}

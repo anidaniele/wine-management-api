@@ -1,24 +1,32 @@
 package org.example.winemanagementapi.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.winemanagementapi.converters.RegionConverter;
+import org.example.winemanagementapi.dto.RegionRequest;
 import org.example.winemanagementapi.dto.RegionResponse;
+import org.example.winemanagementapi.dto.RegionWineResponse;
 import org.example.winemanagementapi.entities.Region;
+import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
 import org.example.winemanagementapi.services.RegionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/regions")
+//@Validated
 public class RegionController {
 
     private final RegionService regionService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping
     public ResponseEntity<List<RegionResponse>> getAllRegions() {
         List<Region> regions = this.regionService.getAllRegions();
@@ -26,5 +34,53 @@ public class RegionController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(RegionConverter.convertRegionsToRegionResponseList(regions));
+    }
+
+//    @GetMapping
+//    public ResponseEntity<List<RegionWineResponse>> getAllRegions() {
+//        List<Region> regions = this.regionService.getAllRegions();
+//        if (regions.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//        return ResponseEntity.ok(RegionConverter.convertRegionsToRegionWineResponseList(regions));
+//    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
+    @GetMapping("/name/{name}")
+    public ResponseEntity<RegionWineResponse> getRegionByName(@PathVariable String name) {
+        Region region = this.regionService.getRegionByName(name);
+        if (region == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(RegionConverter.convertRegiontoRegionWineResponse(region));
+    }
+
+//    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
+//    @GetMapping("/country/{country}")
+//    public ResponseEntity<List<RegionWineResponse>> getRegionByCountry(@PathVariable String country) {
+//        List<Region> region = this.regionService.getRegionsByCountry(country);
+//        if (region == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(RegionConverter.convertRegionsToRegionWineResponseList(region));
+//    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<?> createRegion(@Valid @RequestBody RegionRequest regionRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().body(new ValidationErrorResponse(bindingResult.getFieldErrors()));
+        }
+        Region region = this.regionService.addRegion(RegionConverter.convertRegionRequestToRegion(regionRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(RegionConverter.convertRegiontoRegionResponse(region));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRegionById(@PathVariable Long id) {
+        if (this.regionService.deleteRegionById(id) > 0){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

@@ -10,6 +10,7 @@ import org.example.winemanagementapi.exceptions.ValidationErrorResponse;
 import org.example.winemanagementapi.services.GrapeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,16 @@ import java.util.List;
 public class GrapeController {
     private final GrapeService grapeService;
 
+//    @GetMapping
+//    public ResponseEntity<List<GrapeWineResponse>> getAllGrapes() {
+//        List<Grape> grapes = this.grapeService.getAllGrapes();
+//        if (grapes.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//        return ResponseEntity.ok(GrapeConverter.convertGrapeListToGrapeWineResponseList(grapes));
+//    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping
     public ResponseEntity<List<GrapeResponse>> getAllGrapes() {
         List<Grape> grapes = this.grapeService.getAllGrapes();
@@ -30,6 +41,7 @@ public class GrapeController {
         return ResponseEntity.ok(GrapeConverter.convertGrapeListToGrapeResponseList(grapes));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> createGrape(@Valid @RequestBody GrapeRequest grapeRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
@@ -37,6 +49,15 @@ public class GrapeController {
         }
         Grape grape = this.grapeService.addGrape(GrapeConverter.convertGrapeRequestToGrape(grapeRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(GrapeConverter.convertGrapeToGrapeResponse(grape));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGrapeById(@PathVariable Long id) {
+        if (this.grapeService.deleteGrapeById(id) > 0){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }
