@@ -9,6 +9,7 @@ import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.entities.Grape;
 import org.example.winemanagementapi.entities.Region;
 import org.example.winemanagementapi.entities.Wine;
+import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
 import org.example.winemanagementapi.services.BoxService;
 import org.example.winemanagementapi.services.GrapeService;
 import org.example.winemanagementapi.services.RegionService;
@@ -62,11 +63,16 @@ public class WineController {
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping("/country/{country}")
     public ResponseEntity<List<WineResponse>> getAllWinesByCountry(@PathVariable String country) {
-        List<Wine> wines = this.wineService.getWinesByCountry(country);
-        if (wines.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        try {
+            List<Wine> wines = wineService.getWinesByCountry(country);
+            if (wines.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            List<WineResponse> wineResponses = WineConverter.convertWinesToWineResponseList(wines);
+            return ResponseEntity.ok(wineResponses);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok(WineConverter.convertWinesToWineResponseList(wines));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")

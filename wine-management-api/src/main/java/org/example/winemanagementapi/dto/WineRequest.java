@@ -10,21 +10,21 @@ import java.util.List;
 
 @Builder
 public record WineRequest (
-    @NotBlank
+    @NotBlank(message = "Title must not be blank")
     @Size(min = 2, max = 50)
     String title,
-    @NotBlank
+    @NotBlank(message = "Type must not be blank")
     @Size(min = 2, max = 50)
     String type,
-    @NotNull
+    @NotNull(message = "Year must not be null")
     Integer year,
-    @NotBlank
+    @NotBlank(message = "Region name must not be blank")
     @Size(min = 2, max = 50)
     String regionName,
-    @NotEmpty
+    @NotEmpty(message = "Grape titles must not be blank")
     @Size(min = 1, max = 50)
     List<String> grapeTitles,
-    @NotBlank
+    @NotBlank(message = "Box title must not be blank")
     @Size(min = 2, max = 50)
     String boxTitle
 ){}

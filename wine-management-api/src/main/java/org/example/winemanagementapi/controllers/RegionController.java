@@ -33,15 +33,6 @@ public class RegionController {
         return ResponseEntity.ok(RegionConverter.convertRegionsToRegionResponseList(regions));
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<RegionWineResponse>> getAllRegions() {
-//        List<Region> regions = this.regionService.getAllRegions();
-//        if (regions.isEmpty()) {
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok(RegionConverter.convertRegionsToRegionWineResponseList(regions));
-//    }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping("/name/{name}")
     public ResponseEntity<RegionWineResponse> getRegionByName(@PathVariable String name) {
@@ -51,17 +42,6 @@ public class RegionController {
         }
         return ResponseEntity.ok(RegionConverter.convertRegiontoRegionWineResponse(region));
     }
-
-//    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
-//    @GetMapping("/country/{country}")
-//    public ResponseEntity<List<RegionWineResponse>> getRegionByCountry(@PathVariable String country) {
-//        List<Region> region = this.regionService.getRegionsByCountry(country);
-//        if (region == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(RegionConverter.convertRegionsToRegionWineResponseList(region));
-//    }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping

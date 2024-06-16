@@ -4,9 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ReflectionUtils;
-
-import java.lang.reflect.Field;
 
 public class UniqueFieldValidator implements ConstraintValidator<UniqueField, String> {
 
@@ -25,7 +22,7 @@ public class UniqueFieldValidator implements ConstraintValidator<UniqueField, St
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
-            return true; // null values can be handled separately if needed
+            return true;
         }
 
         String queryStr = String.format("SELECT COUNT(e) FROM %s e WHERE e.%s = :value",

@@ -2,7 +2,6 @@ package org.example.winemanagementapi.converters;
 
 import org.example.winemanagementapi.dto.GrapeRequest;
 import org.example.winemanagementapi.dto.GrapeResponse;
-//import org.example.winemanagementapi.dto.GrapeWineResponse;
 import org.example.winemanagementapi.entities.Grape;
 
 import java.util.ArrayList;
@@ -35,20 +34,6 @@ public final class GrapeConverter {
         return grapeResponse;
     }
 
-//    public static GrapeWineResponse convertGrapeToGrapeWineResponse(Grape grape) {
-//        GrapeWineResponse grapeResponse = null;
-//        if (grape != null) {
-//            grapeResponse = GrapeWineResponse.builder()
-//                    .id(grape.getId())
-//                    .title(grape.getTitle())
-//                    .type(grape.getType())
-//                    .description(grape.getDescription())
-//                    .wines(WineConverter.convertWinesToWineResponseList(grape.getWines()))
-//                    .build();
-//        }
-//        return grapeResponse;
-//    }
-
     public static List<GrapeResponse> convertGrapeListToGrapeResponseList(List<Grape> grapes) {
         List<GrapeResponse> grapeResponses = new ArrayList<>();
         for (Grape grape : grapes) {
@@ -57,11 +42,4 @@ public final class GrapeConverter {
         return grapeResponses;
     }
 
-//    public static List<GrapeWineResponse> convertGrapeListToGrapeWineResponseList(List<Grape> grapes) {
-//        List<GrapeWineResponse> grapeResponses = new ArrayList<>();
-//        for (Grape grape : grapes) {
-//            grapeResponses.add(convertGrapeToGrapeWineResponse(grape));
-//        }
-//        return grapeResponses;
-//    }
 }

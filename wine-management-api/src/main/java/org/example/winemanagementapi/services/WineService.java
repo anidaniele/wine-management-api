@@ -23,7 +23,6 @@ public class WineService {
     public Wine addWine(Wine wine) { return wineRepository.saveAndFlush(wine); }
 
 
-
     public List<Wine> getWinesByRegionName(String name) {
         Region region = regionService.getRegionByName(name);
         return region.getWines();
@@ -37,7 +36,6 @@ public class WineService {
         }
         return wines;
     }
-
 
     public long deleteWineById(Long id) { return wineRepository.removeById(id); }
 

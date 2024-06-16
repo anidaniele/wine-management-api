@@ -3,6 +3,7 @@ package org.example.winemanagementapi.services;
 import lombok.RequiredArgsConstructor;
 import org.example.winemanagementapi.entities.Box;
 import org.example.winemanagementapi.entities.Wine;
+import org.example.winemanagementapi.exceptions.ResourceNotFoundException;
 import org.example.winemanagementapi.repositories.BoxRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,13 @@ public class BoxService {
 
     public Box addBox(Box box) { return boxRepository.saveAndFlush(box); }
 
-    public Box getBoxByName(String name) { return boxRepository.findByName(name); }
+    public Box getBoxByName(String name) {
+        Box box = boxRepository.findByName(name);
+        if (box == null) {
+            throw new ResourceNotFoundException("Box with name " + name + " does not exist");
+        }
+        return box;
+    }
 
     public Box getBoxByWineId(Long wineId) {
         Wine wine = wineService.getWineById(wineId);

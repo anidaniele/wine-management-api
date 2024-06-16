@@ -21,15 +21,6 @@ import java.util.List;
 public class GrapeController {
     private final GrapeService grapeService;
 
-//    @GetMapping
-//    public ResponseEntity<List<GrapeWineResponse>> getAllGrapes() {
-//        List<Grape> grapes = this.grapeService.getAllGrapes();
-//        if (grapes.isEmpty()) {
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok(GrapeConverter.convertGrapeListToGrapeWineResponseList(grapes));
-//    }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     @GetMapping
     public ResponseEntity<List<GrapeResponse>> getAllGrapes() {

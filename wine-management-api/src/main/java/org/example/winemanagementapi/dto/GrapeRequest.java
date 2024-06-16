@@ -3,17 +3,16 @@ package org.example.winemanagementapi.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
-import lombok.Data;
 
 @Builder
 public record GrapeRequest (
-    @NotBlank
+    @NotBlank(message = "Title must not be blank")
     @Size(min = 2, max = 50)
     String title,
-    @NotBlank
+    @NotBlank(message = "Type must not be blank")
     @Size(min = 2, max = 50)
     String type,
-    @NotBlank
+    @NotBlank(message = "Description must not be blank")
     @Size(min = 2, max = 255)
     String description
 ){}
