@@ -1,7 +1,6 @@
 package org.example.winemanagementapi.dto;
 
 import lombok.Builder;
-import lombok.Data;
 
 @Builder
 public record RegionResponse (
